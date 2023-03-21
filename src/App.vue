@@ -52,7 +52,7 @@ const columns = [
   {{ test }}
 
   <div class="card">
-    <DataTable :value="data" tableStyle="min-width: 50rem">
+    <DataTable :value="data" paginator :rows="10" :rowsPerPageOptions="[10, 20, 50]" tableStyle="min-width: 50rem">
       <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
     </DataTable>
   </div>
