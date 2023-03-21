@@ -1,47 +1,67 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import ColumnGroup from 'primevue/columngroup';   // optional
+import Row from 'primevue/row';                   // optional
+
+import { ref } from 'vue'
+
+const nes = {
+  manufacturer: "Nintendo",
+  year: 1986,
+  bestSellingGame: "Super Mario Bros",
+  owned: true
+};
+const snes = {
+  manufacturer: "Nintendo",
+  year: 1991,
+  bestSellingGame: "Super Mario World",
+  owned: true
+};
+const megaDrive = {
+  manufacturer: "Sega",
+  year: 1990,
+  bestSellingGame: "Sonic The Hedgehog",
+  owned: true
+};
+const playStation = {
+  manufacturer: "Sony",
+  year: 1994,
+  bestSellingGame: "Crash Bandicoot",
+  owned: false
+};
+
+const data = ref([nes, snes, megaDrive, playStation])
+
+const columns = [
+  { field: 'manufacturer', header: 'Code' },
+  { field: 'year', header: 'Name' },
+  { field: 'bestSellingGame', header: 'Category' },
+  { field: 'owned', header: 'Quantity' }
+];
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+  {{ data }}
+  <div class="card">
+    aa
+    <DataTable :value="data" tableStyle="min-width: 50rem">
+      <Column field="manufacturer" header="Manufacturer"></Column>
+      <Column field="year" header="Year"></Column>
+      <Column field="bestSellingGame" header="Best Selling Game"></Column>
+      <Column field="owned" header="Owned"></Column>
+    </DataTable>
+  </div>
 
   <main>
-    <TheWelcome />
+    aa
+    <div class="card">
+      <DataTable :value="data" tableStyle="min-width: 50rem">
+        <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
+      </DataTable>
+    </div>
   </main>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+<style scoped></style>
