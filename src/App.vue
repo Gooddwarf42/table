@@ -32,7 +32,13 @@ const playStation = {
   owned: false
 };
 
-const data = ref([nes, snes, megaDrive, playStation])
+const data = ref([nes, snes, megaDrive, playStation]);
+const test = ref(0);
+for (let i = 0; i < 100; i++) {
+  const toAppend = { ...playStation };
+  toAppend.manufacturer += i;
+  test.value = data.value.push(toAppend);
+}
 
 const columns = [
   { field: 'manufacturer', header: 'Code' },
@@ -43,25 +49,13 @@ const columns = [
 </script>
 
 <template>
-  {{ data }}
+  {{ test }}
+
   <div class="card">
-    aa
     <DataTable :value="data" tableStyle="min-width: 50rem">
-      <Column field="manufacturer" header="Manufacturer"></Column>
-      <Column field="year" header="Year"></Column>
-      <Column field="bestSellingGame" header="Best Selling Game"></Column>
-      <Column field="owned" header="Owned"></Column>
+      <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
     </DataTable>
   </div>
-
-  <main>
-    aa
-    <div class="card">
-      <DataTable :value="data" tableStyle="min-width: 50rem">
-        <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
-      </DataTable>
-    </div>
-  </main>
 </template>
 
 <style scoped></style>
