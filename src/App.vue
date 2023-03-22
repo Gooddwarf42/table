@@ -4,6 +4,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import InputText from 'primevue/inputtext';
 import ConfirmDialog from 'primevue/confirmdialog';
+import Button from 'primevue/button';
 import ColumnGroup from 'primevue/columngroup';   // optional
 import Row from 'primevue/row';                   // optional
 
@@ -65,24 +66,41 @@ const editingRows = ref([]);
 
 const confirm = useConfirm();
 
-const onRowEditSave = (event) => {
+function onRowEditSave(event) {
   let { newData, index } = event;
 
   confirm.require({
-        message: 'Confirm the edits?',
-        header: 'Confirm',
-        acceptLabel: 'Save',
-        rejectLabel: 'Cancel',
-        accept: () => {
-          editData(newData, index);
-        }
+    message: 'Confirm the edits?',
+    header: 'Confirm',
+    acceptLabel: 'Save',
+    rejectLabel: 'Cancel',
+    accept: () => {
+      editData(newData, index);
+    }
   });
-};
-
-function editData(newData, index) {
-data.value[index] = newData;
 }
 
+function editData(newData, index) {
+  data.value[index] = newData;
+}
+
+function onRowDelete(event) {
+  let { newData, index } = event;
+
+  confirm.require({
+    message: 'Are you sure you want to delete?',
+    header: 'Confirm',
+    acceptLabel: 'Yes, please delete',
+    rejectLabel: 'Cancel',
+    accept: () => {
+      removeRow(index);
+    }
+  });
+}
+
+function removeRow(index) {
+  data.value.splice(index, 1);
+}
 
 
 </script>
@@ -98,6 +116,11 @@ data.value[index] = newData;
         </template>
       </Column>
       <Column :rowEditor="true" style="width: 10%; min-width: 8rem" bodyStyle="text-align:center"></Column>
+      <Column style="width: 5%; min-width: 6rem" bodyStyle="text-align:center">
+        <template #body="{ data, field, slotProps }">
+          <Button type="button" icon="pi pi-trash" @click="onRowDelete"></Button>
+        </template>
+      </Column>
     </DataTable>
   </div>
 
