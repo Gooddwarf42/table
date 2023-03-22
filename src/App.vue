@@ -3,10 +3,12 @@
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import InputText from 'primevue/inputtext';
+import ConfirmDialog from 'primevue/confirmdialog';
 import ColumnGroup from 'primevue/columngroup';   // optional
 import Row from 'primevue/row';                   // optional
 
 import { ref } from 'vue'
+import { useConfirm } from "primevue/useconfirm";
 
 const nes = {
   manufacturer: "Nintendo",
@@ -60,16 +62,33 @@ const columns = [
 
 const editingRows = ref([]);
 
+
+const confirm = useConfirm();
+
 const onRowEditSave = (event) => {
   let { newData, index } = event;
 
-  data.value[index] = newData;
+  confirm.require({
+        message: 'Confirm the edits?',
+        header: 'Confirm',
+        acceptLabel: 'Save',
+        rejectLabel: 'Cancel',
+        accept: () => {
+          editData(newData, index);
+        }
+  });
 };
+
+function editData(newData, index) {
+data.value[index] = newData;
+}
+
+
+
 </script>
 
 <template>
-  {{ test }}
-
+  <ConfirmDialog></ConfirmDialog>
   <div class="card">
     <DataTable v-model:editingRows="editingRows" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" :value="data"
       paginator :rows="10" :rowsPerPageOptions="[10, 20, 50]" tableStyle="min-width: 50rem">
