@@ -84,18 +84,16 @@ function editData(newData, index) {
   data.value[index] = newData;
 }
 
-function onRowDelete(event) {
-  let { newData, index } = event;
-
-  confirm.require({
-    message: 'Are you sure you want to delete?',
-    header: 'Confirm',
-    acceptLabel: 'Yes, please delete',
-    rejectLabel: 'Cancel',
-    accept: () => {
-      removeRow(index);
-    }
-  });
+function onRowDelete(idx, event) {
+    confirm.require({
+      message: 'Are you sure you want to delete?',
+      header: 'Confirm',
+      acceptLabel: 'Yes, please delete',
+      rejectLabel: 'Cancel',
+      accept: () => {
+        removeRow(idx);
+      }
+    });
 }
 
 function removeRow(index) {
@@ -117,8 +115,8 @@ function removeRow(index) {
       </Column>
       <Column :rowEditor="true" style="width: 10%; min-width: 8rem" bodyStyle="text-align:center"></Column>
       <Column style="width: 5%; min-width: 6rem" bodyStyle="text-align:center">
-        <template #body="{ data, field, slotProps }">
-          <Button type="button" icon="pi pi-trash" @click="onRowDelete"></Button>
+        <template #body="{ index }">
+          <Button type="button" icon="pi pi-trash" @click="(event) => onRowDelete(index, event)"></Button>
         </template>
       </Column>
     </DataTable>
