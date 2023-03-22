@@ -1,71 +1,36 @@
 <script setup>
-
+// Import primevue Components
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import InputText from 'primevue/inputtext';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Button from 'primevue/button';
-import ColumnGroup from 'primevue/columngroup';   // optional
-import Row from 'primevue/row';                   // optional
 
+// Import objects
 import { ref } from 'vue'
 import { useConfirm } from "primevue/useconfirm";
 
-const nes = {
-  manufacturer: "Nintendo",
-  name: "Nintendo Entertainment System",
-  year: 1986,
-  bestSellingGame: "Super Mario Bros",
-  owned: true,
-  id: 100
-};
-const snes = {
-  manufacturer: "Nintendo",
-  name: "Super Nintendo",
-  year: 1991,
-  bestSellingGame: "Super Mario World",
-  owned: true,
-  id: 101
-};
-const megaDrive = {
-  manufacturer: "Sega",
-  name: "Mega Drive",
-  year: 1990,
-  bestSellingGame: "Sonic The Hedgehog",
-  owned: true,
-  id: 102
-};
-const playStation = {
-  manufacturer: "Sony",
-  name: "PlayStation",
-  year: 1994,
-  bestSellingGame: "Crash Bandicoot",
-  owned: false,
-  id: 103
-};
+// Populate data from local .json file
+import jsonData from '../data/pokedex.json';
+const data = ref(jsonData.pokemon);
 
-const data = ref([nes, snes, megaDrive, playStation]);
-const test = ref(0);
-for (let i = 0; i < 100; i++) {
-  const toAppend = { ...playStation };
-  toAppend.manufacturer += i;
-  toAppend.id = i;
-  test.value = data.value.push(toAppend);
-}
-
+// Select columns to show
 const columns = [
+  { field: 'num', header: 'Number' },
   { field: 'name', header: 'Name' },
-  { field: 'manufacturer', header: 'Code' },
-  { field: 'year', header: 'Year' },
-  { field: 'bestSellingGame', header: 'Category' },
-  { field: 'owned', header: 'Quantity' }
+  { field: 'type', header: 'Type' },
+  { field: 'height', header: 'Height' },
+  { field: 'weight', header: 'Weight' },
+  { field: 'egg', header: 'Egg' }
 ];
 
+// Reference needed to edit rowes
 const editingRows = ref([]);
 
-
+// Confirmation dialogue instance
 const confirm = useConfirm();
 
+// Handling RowEditSavve events
 function onRowEditSave(event) {
   let { newData, index } = event;
 
@@ -84,22 +49,22 @@ function editData(newData, index) {
   data.value[index] = newData;
 }
 
-function onRowDelete(idx, event) {
-    confirm.require({
-      message: 'Are you sure you want to delete?',
-      header: 'Confirm',
-      acceptLabel: 'Yes, please delete',
-      rejectLabel: 'Cancel',
-      accept: () => {
-        removeRow(idx);
-      }
-    });
+// Handling RowDelete events
+function onRowDelete(idx, data, event) {
+  confirm.require({
+    message: `Are you sure you want to delete ${data.name}?`,
+    header: 'Confirm',
+    acceptLabel: 'Yes, please delete',
+    rejectLabel: 'Cancel',
+    accept: () => {
+      removeRow(idx);
+    }
+  });
 }
 
 function removeRow(index) {
   data.value.splice(index, 1);
 }
-
 
 </script>
 
@@ -108,33 +73,21 @@ function removeRow(index) {
   <div class="card">
     <DataTable v-model:editingRows="editingRows" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" :value="data"
       paginator :rows="10" :rowsPerPageOptions="[10, 20, 50]" tableStyle="min-width: 50rem">
+
       <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header">
         <template #editor="{ data, field }">
           <InputText v-model="data[field]" />
         </template>
       </Column>
+
       <Column :rowEditor="true" style="width: 10%; min-width: 8rem" bodyStyle="text-align:center"></Column>
+
       <Column style="width: 5%; min-width: 6rem" bodyStyle="text-align:center">
-        <template #body="{ index }">
-          <Button type="button" icon="pi pi-trash" @click="(event) => onRowDelete(index, event)"></Button>
+        <template #body="{ data, index }">
+          <Button type="button" icon="pi pi-trash" @click="(event) => onRowDelete(index, data, event)" />
         </template>
       </Column>
-    </DataTable>
-  </div>
 
-
-
-  <div class="card">
-    <DataTable v-model:editingRows="editingRows" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" :value="data"
-      paginator :rows="10" :rowsPerPageOptions="[10, 20, 50]" tableStyle="min-width: 50rem">
-      <Column field="name" header="Name">
-        <template #editor="{ data, field }">
-          <InputText v-model="data[field]" />
-        </template>
-      </Column>
-      <Column :rowEditor="true" style="width: 10%; min-width: 8rem" bodyStyle="text-align:center"></Column>
     </DataTable>
   </div>
 </template>
-
-<style scoped></style>
