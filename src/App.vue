@@ -72,7 +72,15 @@ function removeRow(index) {
   <ConfirmDialog></ConfirmDialog>
   <div class="card">
     <DataTable v-model:editingRows="editingRows" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" :value="data"
-      paginator :rows="10" :rowsPerPageOptions="[10, 20, 50]" tableStyle="min-width: 50rem">
+      paginator :rows="10" :rowsPerPageOptions="[10, 20, 50]" tableStyle="min-width: 70rem">
+
+      <Column field="img" header="Image">
+        <template #body="slotProps">
+            <img :src="slotProps.data.img" :alt="slotProps.data.img" class="w-6rem shadow-2 border-round" />
+        </template>
+        <!--Oh! So basically I can set either `slotProps` to the body slot,
+          or individual properties in brackets! I understand now (2023/03/22 - 23:02)-->
+      </Column>
 
       <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header">
         <template #editor="{ data, field }">
